@@ -4,14 +4,11 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-public class TextureImporterTool : MonoBehaviour
+public class TextureImporterTool
 { 
     static string initalPath = null;
-    static List<string> findedFilePath = new List<string>();
-    
- 
-
-    public void ExampleRun()
+    static List<string> findedFilePath = new List<string>(); 
+    public static void ExampleRun()
     {
         FindAllFiles("/Sprites/idle", true, OnFindFile);
         var array = findedFilePath.ToArray();
