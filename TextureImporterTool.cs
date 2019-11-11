@@ -7,7 +7,8 @@ using System.IO;
 public class TextureImporterTool
 {
     static string initalPath = null;
-    static List<string> findedFilePath = new List<string>();
+    public static bool IsCenterMode = false;
+    public static List<string> findedFilePath = new List<string>();
     public static void ExampleRun()
     {
         FindAllFiles("/Sprites/idle", true, OnFindFile);
@@ -16,7 +17,7 @@ public class TextureImporterTool
         LoadAndModify(array);
         findedFilePath.Clear();
     }
-    private static void OnFindFile(string file)
+    public static void OnFindFile(string file)
     {
         findedFilePath.Add(file);
     }
@@ -81,10 +82,6 @@ public class TextureImporterTool
             {
                 //readable 처리
                 ti.isReadable = true;
-
-                //readable을 위한 에셋 임포트
-                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
-
                 //텍스쳐 세팅정보 읽어오기
                 TextureImporterSettings texSettings = new TextureImporterSettings();
                 ti.ReadTextureSettings(texSettings);
@@ -93,18 +90,18 @@ public class TextureImporterTool
 
                 //y피봇적용
                 var yPivot = lowPivot;
-                ti.spritePivot = new Vector2(ti.spritePivot.x, yPivot);
-
-                //readable false 
-                ti.isReadable = false;
-
-                //적용
-                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
-
+                float xPivot = ti.spritePivot.x;
+                if (IsCenterMode)
+                {
+                    xPivot = 0.5f;
+                }
+                ti.spritePivot = new Vector2(xPivot, yPivot); 
+                ti.isReadable = false; 
             }
-        }
-
+        } 
         AssetDatabase.Refresh();
+        findedFilePath.Clear();
+
     }
 
     /// <summary>
