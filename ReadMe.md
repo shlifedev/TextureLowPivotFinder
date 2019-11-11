@@ -5,5 +5,5 @@
 
  if your png file path is 'Assets/Sprites/Character/Idle' use like this
  float position = TextureImporterTool.FindLowPivot("/Sprites/Character/Idle");
- 
- ![img](https://github.com/shlifedev/TextureLowPivotFinder/blob/master/Download-Black-Cat-PNG-File.png)
+
+ ![img](https://github.com/shlifedev/TextureLowPivotFinder/blob/master/Download-Black-Cat-PNG-File%20(1).png)
