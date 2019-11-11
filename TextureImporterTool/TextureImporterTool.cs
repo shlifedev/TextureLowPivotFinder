@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -8,7 +8,7 @@ public class TextureImporterTool
 {
     static string initalPath = null;
     public static bool IsCenterMode = false;
-    public static List<string> findedFilePath = new List<string>();
+    public static List<string> findedFilePath = new List<string>(); 
     public static void ExampleRun()
     {
         FindAllFiles("/Sprites/idle", true, OnFindFile);
