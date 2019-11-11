@@ -6,17 +6,12 @@ using System.IO;
 
 public class TextureImporterTool : MonoBehaviour
 { 
-    string initalPath = null;
-    List<string> findedFilePath = new List<string>();
+    static string initalPath = null;
+    static List<string> findedFilePath = new List<string>();
     
-    [ContextMenu("Test")]
-    public void Test()
-    {
-        Run();
-    }
+ 
 
-
-    public void Run()
+    public void ExampleRun()
     {
         FindAllFiles("/Sprites/idle", true, OnFindFile);
         var array = findedFilePath.ToArray();
@@ -24,7 +19,7 @@ public class TextureImporterTool : MonoBehaviour
         LoadAndModify(array);
         findedFilePath.Clear();
     }
-    private void OnFindFile(string file)
+    private static void OnFindFile(string file)
     {
         findedFilePath.Add(file); 
     }
@@ -34,7 +29,7 @@ public class TextureImporterTool : MonoBehaviour
     /// <param name="path"></param>
     /// <param name="isAssetPath"></param>
     /// <param name="action"></param>
-    public void FindAllFiles(string path, bool isAssetPath, System.Action<string> action = null)
+    static void FindAllFiles(string path, bool isAssetPath, System.Action<string> action = null)
     { 
         if (isAssetPath) path = UnityEngine.Application.dataPath + path;
         DirectoryInfo di = new DirectoryInfo(path);
@@ -70,13 +65,13 @@ public class TextureImporterTool : MonoBehaviour
         }
 
      
-    } 
+    }
 
-    public void LoadAndModify(string assetPath)
+    static void LoadAndModify(string assetPath)
     {
         LoadAndModify(new string[] { assetPath });
     }
-    public void LoadAndModify(string[] assetPaths)
+    static void LoadAndModify(string[] assetPaths)
     {
         TextureImporter ti; 
         var lowPivot = FindLowPivot(assetPaths);
@@ -118,7 +113,7 @@ public class TextureImporterTool : MonoBehaviour
     /// <summary>
     /// 가장 낮은 피봇찾기.
     /// </summary> 
-    public float FindLowPivot(string[] assetPaths)
+    public static float FindLowPivot(string[] assetPaths)
     {
         float retValue = float.MaxValue;
         TextureImporter ti;
@@ -141,7 +136,7 @@ public class TextureImporterTool : MonoBehaviour
 
         return retValue;
     }
-    public (float, bool) GetYEndPixel(Texture2D texture2D)
+    static (float, bool) GetYEndPixel(Texture2D texture2D)
     {
         var colors = texture2D.GetPixels(); //픽셀 가져옴
         int cnt = 0; //카운트계산
