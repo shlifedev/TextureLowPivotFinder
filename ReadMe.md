@@ -7,5 +7,5 @@
  float position = TextureImporterTool.FindLowPivot("/Sprites/Character/Idle");
 
 
- shlifedev.
+ by shlifedev.
  
