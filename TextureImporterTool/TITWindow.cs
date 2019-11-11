@@ -6,6 +6,7 @@ using UnityEditor.UIElements;
 
 public class TITWindow : EditorWindow
 {
+    static string guid = "b1d10f2b1b2da384a9942068ba9dea80";
     string path = null;
     ObjectField field = null;
     Button build = null;
@@ -18,10 +19,10 @@ public class TITWindow : EditorWindow
 
     private void OnChange(ChangeEvent<Object> e)
     {
-        path = AssetDatabase.GetAssetPath(e.newValue); 
-        if(AssetDatabase.IsValidFolder(path))
+        path = AssetDatabase.GetAssetPath(e.newValue);
+        if (AssetDatabase.IsValidFolder(path))
         {
-            
+
         }
         else
         {
@@ -29,12 +30,26 @@ public class TITWindow : EditorWindow
             EditorUtility.DisplayDialog("Error!", "this is not folder!!", "ok..");
         }
     }
+
+    [MenuItem("Assets/HamsterLibs/Tool/CopyGUID")]
+    public static void GUIDCopy()
+    {
+        var guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(Selection.activeObject));
+        var textEditor = new TextEditor();
+        textEditor.text = guid;
+        textEditor.SelectAll();
+        textEditor.Copy();
+
+        Debug.Log("GUID Copy ! => " + guid);
+    }
     public void OnEnable()
     {
         // Each editor window contains a root VisualElement object
         VisualElement root = rootVisualElement;
-        // Import UXML
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Scripts/TextureTool/Editor/TITWindow.uxml");
+        // Import UXML 
+
+        var guidPath = AssetDatabase.GUIDToAssetPath(guid);
+        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(guidPath);
         VisualElement uxml = visualTree.CloneTree();
         root.Add(uxml);
 
