@@ -5,9 +5,9 @@ using UnityEditor;
 using System.IO;
 
 public class TextureImporterTool
-{ 
+{
     static string initalPath = null;
-    static List<string> findedFilePath = new List<string>(); 
+    static List<string> findedFilePath = new List<string>();
     public static void ExampleRun()
     {
         FindAllFiles("/Sprites/idle", true, OnFindFile);
@@ -18,7 +18,7 @@ public class TextureImporterTool
     }
     private static void OnFindFile(string file)
     {
-        findedFilePath.Add(file); 
+        findedFilePath.Add(file);
     }
     /// <summary>
     /// 폴더의 트리구조 탐색후 파일정보 얻어오자.
@@ -26,8 +26,8 @@ public class TextureImporterTool
     /// <param name="path"></param>
     /// <param name="isAssetPath"></param>
     /// <param name="action"></param>
-    static void FindAllFiles(string path, bool isAssetPath, System.Action<string> action = null)
-    { 
+    public static void FindAllFiles(string path, bool isAssetPath, System.Action<string> action = null)
+    {
         if (isAssetPath) path = UnityEngine.Application.dataPath + path;
         DirectoryInfo di = new DirectoryInfo(path);
         var dirs = di.GetDirectories();
@@ -61,16 +61,16 @@ public class TextureImporterTool
             }
         }
 
-     
+
     }
 
-    static void LoadAndModify(string assetPath)
+    public static void LoadAndModify(string assetPath)
     {
         LoadAndModify(new string[] { assetPath });
     }
-    static void LoadAndModify(string[] assetPaths)
+    public static void LoadAndModify(string[] assetPaths)
     {
-        TextureImporter ti; 
+        TextureImporter ti;
         var lowPivot = FindLowPivot(assetPaths);
         foreach (var assetPath in assetPaths)
         {
@@ -117,7 +117,7 @@ public class TextureImporterTool
         foreach (var assetPath in assetPaths)
         {
             Texture2D assetT2D = AssetDatabase.LoadAssetAtPath(assetPath, typeof(Texture2D)) as Texture2D;
-            ti = AssetImporter.GetAtPath(assetPath) as TextureImporter; 
+            ti = AssetImporter.GetAtPath(assetPath) as TextureImporter;
             if (ti != null)
             {
                 //readable 처리
@@ -125,9 +125,9 @@ public class TextureImporterTool
                 AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
                 //y피봇적용
                 var yPivot = GetYEndPixel(assetT2D).Item1;
-                if (retValue > yPivot) retValue = yPivot; 
-                ti.isReadable = false; 
-                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate); 
+                if (retValue > yPivot) retValue = yPivot;
+                ti.isReadable = false;
+                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
             }
         }
 
@@ -147,5 +147,5 @@ public class TextureImporterTool
             cnt++;
         }
         return (0.5f, false);
-    } 
+    }
 }
