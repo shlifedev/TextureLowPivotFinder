@@ -2,14 +2,15 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-
-
+using System.Collections;
+ 
 public class TITWindow : EditorWindow
 {
     static string guid = "b1d10f2b1b2da384a9942068ba9dea80";
     string path = null;
     ObjectField field = null;
     Button build = null;
+    FloatField customYField = null;
     [MenuItem("HamsterLibs/Tools/LowPivotChanger")]
     public static void ShowExample()
     {
@@ -31,16 +32,22 @@ public class TITWindow : EditorWindow
         }
     }
 
-    [MenuItem("Assets/HamsterLibs/Tool/CopyGUID")]
-    public static void GUIDCopy()
+
+    private void OnChange(ChangeEvent<float> e)
     {
-        var guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(Selection.activeObject));
-        var textEditor = new TextEditor();
-        textEditor.text = guid;
+        TextureImporterTool.custom_y_pos = e.newValue;
+    }
+
+    [MenuItem("HamsterLibs/Tool/CopyGUID")]
+    public static void A()
+    {
+        var clipboard = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(Selection.activeObject));
+        var textEditor = new TextEditor(); 
+        textEditor.text = clipboard;
         textEditor.SelectAll();
         textEditor.Copy();
 
-        Debug.Log("GUID Copy ! => " + guid);
+        Debug.Log(clipboard);
     }
     public void OnEnable()
     {
@@ -48,16 +55,18 @@ public class TITWindow : EditorWindow
         VisualElement root = rootVisualElement;
         // Import UXML 
 
-        var guidPath = AssetDatabase.GUIDToAssetPath(guid);
+            var guidPath = AssetDatabase.GUIDToAssetPath(guid);
         var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(guidPath);
         VisualElement uxml = visualTree.CloneTree();
         root.Add(uxml);
 
         field = uxml.Query().Name("folder-field").Build().First() as ObjectField;
+        customYField = uxml.Query().Name("custom-y-pos").Build().First() as FloatField;
+        customYField.RegisterValueChangedCallback(OnChange);
         field.objectType = typeof(Object);
         field.RegisterValueChangedCallback(OnChange);
         build = uxml.Query().Name("build").Build().First() as Button;
-        build.RegisterCallback<MouseUpEvent>(x => {
+        build.RegisterCallback<MouseUpEvent>(x => { 
             TextureImporterTool.FindAllFiles(path.Replace("Assets/", "/"), true, TextureImporterTool.OnFindFile);
             TextureImporterTool.LoadAndModify(TextureImporterTool.findedFilePath.ToArray());
         });

@@ -15,4 +15,6 @@ xsi:schemaLocation="
   <engine:Button text="Build" name ="build">
   </engine:Button>
   <engine:Label text="Set your sprite-folder path or sprite."/>
+  <engine:Label text="If you want fix custom y pos, modify value."/>
+  <editor:FloatField name ="custom-y-pos" value="-1" label="custom-y-pos"> </editor:FloatField>
 </engine:UXML>

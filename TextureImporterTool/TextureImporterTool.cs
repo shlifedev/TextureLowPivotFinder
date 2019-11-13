@@ -8,7 +8,9 @@ public class TextureImporterTool
 {
     static string initalPath = null;
     public static bool IsCenterMode = false;
-    public static List<string> findedFilePath = new List<string>(); 
+    public static List<string> findedFilePath = new List<string>();
+
+    public static bool IsReadable = false; 
     public static void ExampleRun()
     {
         FindAllFiles("/Sprites/idle", true, OnFindFile);
@@ -27,8 +29,9 @@ public class TextureImporterTool
     /// <param name="path"></param>
     /// <param name="isAssetPath"></param>
     /// <param name="action"></param>
-    public static void FindAllFiles(string path, bool isAssetPath, System.Action<string> action = null)
+    public static void FindAllFiles(string path, bool isAssetPath, System.Action<string> action = null, bool clearList = false)
     {
+        if (clearList) findedFilePath.Clear();
         if (isAssetPath) path = UnityEngine.Application.dataPath + path;
         DirectoryInfo di = new DirectoryInfo(path);
         var dirs = di.GetDirectories();
@@ -67,12 +70,14 @@ public class TextureImporterTool
 
     public static void LoadAndModify(string assetPath)
     {
+        var p = new GameObject();
+        
         LoadAndModify(new string[] { assetPath });
     }
     public static void LoadAndModify(string[] assetPaths)
     {
         TextureImporter ti;
-        var lowPivot = FindLowPivot(assetPaths);
+        var lowPivot = FindLowPivot(assetPaths); 
         foreach (var assetPath in assetPaths)
         {
             Texture2D assetT2D = AssetDatabase.LoadAssetAtPath(assetPath, typeof(Texture2D)) as Texture2D;
@@ -82,6 +87,7 @@ public class TextureImporterTool
             {
                 //readable 처리
                 ti.isReadable = true;
+                
                 //텍스쳐 세팅정보 읽어오기
                 TextureImporterSettings texSettings = new TextureImporterSettings();
                 ti.ReadTextureSettings(texSettings);
@@ -123,26 +129,36 @@ public class TextureImporterTool
                 //y피봇적용
                 var yPivot = GetYEndPixel(assetT2D).Item1;
                 if (retValue > yPivot) retValue = yPivot;
-                ti.isReadable = false;
-                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+                ti.isReadable = false; 
             }
         }
 
         return retValue;
-    }
+    } 
+
+    public static float custom_y_pos = -1;
     static (float, bool) GetYEndPixel(Texture2D texture2D)
     {
-        var colors = texture2D.GetPixels(); //픽셀 가져옴
-        int cnt = 0; //카운트계산
-        foreach (var data in colors)
+        if(custom_y_pos != -1)
         {
-            if (data.a != 0)
-            {
-                var p = (float)cnt / (float)texture2D.height; //  처음 발견되는 transparent 값이 0인 픽셀 위치의 배열번호에서 height나눠서 위치구하기.
-                return (p / texture2D.height, true);
-            }
-            cnt++;
+            return (custom_y_pos, true);
         }
-        return (0.5f, false);
+        else 
+        {
+            var colors = texture2D.GetPixels(); //픽셀 가져옴
+            int cnt = 0; //카운트계산
+            foreach (var data in colors)
+            {
+                if (data.a != 0)
+                {
+                    var p = (float)cnt / (float)texture2D.height; //  처음 발견되는 transparent 값이 0인 픽셀 위치의 배열번호에서 height나눠서 위치구하기.
+                    return (p / texture2D.height, true);
+                }
+                cnt++;
+            }
+            return (0.5f, false);
+        }
+  
+       
     }
 }
